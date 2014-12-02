@@ -1,0 +1,6 @@
+*~
+_darcs
+.cabal-sandbox
+.boring
+dist
+cabal.sandbox.config
