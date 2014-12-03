@@ -60,6 +60,10 @@ we are `Tree k a` or `Forest k a`. Of course, you could use a pair and
 define the Ord and Eq instance appropriately, but it's using lists
 underneath, which is a performance killer for large data sets.
 
+## If a Tree falls in a Forest, and no one is there, does it make a sound?
+
+Every cat belongs to Schrödinger in the land of the lazy.
+
 ## Implementation Notes
 
 So, there are two interfaces: Tree and Forest.
