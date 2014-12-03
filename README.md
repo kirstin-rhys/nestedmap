@@ -46,6 +46,12 @@ it much harder to guarentee structural soundness.
 For example, we could easily delete an interior node while leaving the
 descendents intact. That's just not possible with NestedMap.
 
+## Isn't this just a Trie?
+
+Well, it kind of is. But in practice, tries seem to be focused on
+strings as keys. We want to be more general. I'm sure there is a
+better name.
+
 ## Implementation Notes
 
 So, there are two interfaces: Tree and Forest.
