@@ -52,6 +52,13 @@ Well, it kind of is. But in practice, tries seem to be focused on
 strings as keys. We want to be more general. I'm sure there is a
 better name.
 
+## Isn't this just a RoseTree?
+
+Well, it kind of is. But the RoseTree is just `RoseTree a`, where as
+we are `Tree k a` or `Forest k a`. Of course, you could use a pair and
+define the Ord and Eq instance appropriately, but it's using lists
+underneath, which is a performance killer for large data sets.
+
 ## Implementation Notes
 
 So, there are two interfaces: Tree and Forest.
