@@ -6,6 +6,7 @@ module Data.Nested.Tree
          -- * Query
        , fruit, forest
        , null, size
+       , lookup
          -- * Construction
        , empty
        , singleton
@@ -15,6 +16,7 @@ module Data.Nested.Tree
        , toList
        ) where
 
+import Data.Maybe (Maybe)
 import Data.Ord (Ord)
 import Data.Int (Int)
 import Data.Bool (Bool)
@@ -28,6 +30,7 @@ import Data.Nested.Internal ( Tree
                             , fromFoldableTree
                             , fromListTree
                             , toListTree
+                            , lookupTree
                             )
 
 empty ∷ α → Tree κ α
@@ -38,6 +41,9 @@ null = nullTree
 
 size ∷ Tree κ α → Int
 size = sizeTree
+
+lookup ∷ Ord κ ⇒ [κ] → Tree κ α → [Maybe α]
+lookup = lookupTree
 
 singleton ∷ Foldable φ ⇒ α → φ (κ,α) → Tree κ α
 singleton = singletonTree

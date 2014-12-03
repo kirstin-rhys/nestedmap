@@ -7,6 +7,7 @@ module Data.Nested.Internal
        , fruit, forest, trees, treeAssocs
        , nullTree, nullForest
        , sizeTree, sizeForest
+       , lookupTree, lookupForest
          -- * Construction
        , emptyTree, emptyForest
        , singletonTree, singletonForest
@@ -19,10 +20,11 @@ module Data.Nested.Internal
 import qualified Data.List as L
 import Prelude.Unicode ((⊥))
 import Prelude (Num, (+))
+import Data.Maybe (Maybe(Just, Nothing), maybe)
 import Data.Int (Int)
 import Data.Bool (Bool, otherwise)
 import Data.Ord (Ord)
-import Data.Tuple (uncurry)
+import Data.Tuple (uncurry, snd)
 import Data.Function (flip, ($), const, id)
 import Data.Function.Unicode ((∘))
 import Data.Functor (Functor, fmap)
@@ -30,11 +32,13 @@ import Data.Foldable (Foldable, foldr, foldMap)
 import Data.Monoid (Monoid, mempty, mappend, mconcat)
 import Data.Monoid.Unicode ((⊕))
 import Text.Show (Show)
+import Control.Arrow ((&&&))
+import Control.Monad ((>>=), join)
 import Data.Map (Map)
 import qualified Data.Map as M
 
 data Tree κ α where
-  Tree ∷ { fruit  ∷ ! α
+  Tree ∷ { fruit  ∷ α
          , forest ∷ Forest κ α
          } → Tree κ α
   deriving (Show)
@@ -82,6 +86,14 @@ sizeForest = foldr (const (+1)) 0
 
 sizeTree ∷ Tree κ α → Int
 sizeTree = (+1) ∘ sizeForest ∘ forest
+
+lookupForest ∷ Ord κ ⇒ [κ] → Forest κ α → [Maybe α]
+lookupForest ks f = snd $ L.mapAccumL (flip lookup) (Just f) ks
+  where lookup ∷ Ord κ ⇒ κ → Maybe (Forest κ α) → (Maybe (Forest κ α), Maybe α)
+        lookup k = (fmap forest &&& fmap fruit) ∘ join ∘ fmap (M.lookup k ∘ unForest)
+
+lookupTree ∷ Ord κ ⇒ [κ] → Tree κ α → [Maybe α]
+lookupTree ks t = (Just $ fruit t) : lookupForest ks (forest t)
 
 emptyForest ∷ Forest κ α
 emptyForest = Forest M.empty

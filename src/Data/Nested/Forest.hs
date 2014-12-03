@@ -6,6 +6,7 @@ module Data.Nested.Forest
          -- * Query
        , trees, treeAssocs
        , null, size
+       , lookup
          -- * Construction
        , empty
        , singleton
@@ -15,6 +16,7 @@ module Data.Nested.Forest
        , toList
        ) where
 
+import Data.Maybe (Maybe)
 import Data.Ord (Ord)
 import Data.Int (Int)
 import Data.Bool (Bool)
@@ -28,6 +30,7 @@ import Data.Nested.Internal ( Forest
                             , fromFoldableForest
                             , fromListForest
                             , toListForest
+                            , lookupForest
                             )
 
 empty ∷ Forest κ α
@@ -50,3 +53,6 @@ fromList = fromListForest
 
 toList ∷ Forest κ α → [[(κ, α)]]
 toList = toListForest
+
+lookup ∷ Ord κ ⇒ [κ] → Forest κ α → [Maybe α]
+lookup = lookupForest

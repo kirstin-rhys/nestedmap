@@ -16,15 +16,21 @@ import Data.Nested.Tree ( empty
                         , null
                         , singleton
                         , size
+                        , fromList
+                        , lookup
                         )
 
 spec ∷ Spec
 spec = describe "Tree" $ do
-       prop "null empty should always be true" prop_null_empty
+       prop "null empty should always be true"                                           prop_null_empty
        prop "the size of a singleton tree should be the length of the argument plus one" prop_singleton_size
+       prop "the result of lookup should always be one more than the the query size"     prop_lookup_length_idempotent
 
 prop_null_empty ∷ Int → Bool
-prop_null_empty x = null (empty x) ≡ True
+prop_null_empty v = null (empty v) ≡ True
 
 prop_singleton_size ∷ Char → [(Int,Char)] → Bool
-prop_singleton_size x xs = size (singleton x xs) ≡ L.length xs + 1
+prop_singleton_size v kvs = size (singleton v kvs) ≡ L.length kvs + 1
+
+prop_lookup_length_idempotent ∷ Int → [[(Char,Int)]] → [Char] → Bool
+prop_lookup_length_idempotent v kvs ks = L.length ks + 1 ≡ L.length (lookup ks (fromList v kvs))
