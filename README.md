@@ -31,7 +31,7 @@ particular node in the nested map, you are guaranteed to be only
 working with data described by the ancestors.
 
 Another example might be delineating highways from local roads given a
-data set of directions.
+data set of directions, after doing a topological sort.
 
 It is very useful for any sort of number crunching on
 sparse matricies or tensors.
