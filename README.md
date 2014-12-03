@@ -28,8 +28,8 @@ of complex data. By first transforming the data into a nested map
 representation via a list of projections, it's much easier write the
 logic for tranforming and operating on the data--since at any
 particular node in the nested map, you are guaranteed to not only be
-working with data described by the ancestors, but also all of the
-prescribed data.
+working with *only* the data described by the ancestors, but also *all* of
+the prescribed data.
 
 Another example might be delineating highways from local roads given a
 data set of directions, after doing a topological sort.
