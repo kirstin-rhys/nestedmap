@@ -16,7 +16,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-  -- exposed-modules:
+  exposed-modules:     Data.Nested.Tree, Data.Nested.Forest
   -- other-modules:
   -- other-extensions:
   hs-source-dirs:      src

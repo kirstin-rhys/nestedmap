@@ -16,11 +16,13 @@ module Data.Nested.Forest
        , toList
        ) where
 
+import Data.Function (flip)
 import Data.Maybe (Maybe)
 import Data.Ord (Ord)
 import Data.Int (Int)
 import Data.Bool (Bool)
 import Data.Foldable (Foldable)
+import Data.Traversable (Traversable)
 import Data.Nested.Internal ( Forest
                             , trees, treeAssocs
                             , nullForest
@@ -54,5 +56,5 @@ fromList = fromListForest
 toList ∷ Forest κ α → [[(κ, α)]]
 toList = toListForest
 
-lookup ∷ Ord κ ⇒ [κ] → Forest κ α → [Maybe α]
-lookup = lookupForest
+lookup ∷ (Traversable φ, Ord κ) ⇒ φ κ → Forest κ α → φ (Maybe α)
+lookup = flip lookupForest

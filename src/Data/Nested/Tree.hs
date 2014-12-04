@@ -16,11 +16,14 @@ module Data.Nested.Tree
        , toList
        ) where
 
+
+import Data.Function (flip)
 import Data.Maybe (Maybe)
 import Data.Ord (Ord)
 import Data.Int (Int)
 import Data.Bool (Bool)
 import Data.Foldable (Foldable)
+import Data.Traversable (Traversable)
 
 import Data.Nested.Internal ( Tree
                             , nullTree, fruit, forest
@@ -42,8 +45,8 @@ null = nullTree
 size ∷ Tree κ α → Int
 size = sizeTree
 
-lookup ∷ Ord κ ⇒ [κ] → Tree κ α → [Maybe α]
-lookup = lookupTree
+lookup ∷ (Traversable φ, Ord κ) ⇒ φ κ → Tree κ α → (α, φ (Maybe α))
+lookup = flip lookupTree
 
 singleton ∷ Foldable φ ⇒ α → φ (κ,α) → Tree κ α
 singleton = singletonTree

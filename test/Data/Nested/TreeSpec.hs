@@ -9,6 +9,7 @@ import qualified Data.List as L
 import Prelude ((+))
 import Data.Char (Char)
 import Data.Int (Int)
+import Data.Tuple (snd)
 import Data.Eq.Unicode ((≡))
 import Data.Function (($))
 import Data.Bool (Bool(..))
@@ -33,4 +34,4 @@ prop_singleton_size ∷ Char → [(Int,Char)] → Bool
 prop_singleton_size v kvs = size (singleton v kvs) ≡ L.length kvs + 1
 
 prop_lookup_length_idempotent ∷ Int → [[(Char,Int)]] → [Char] → Bool
-prop_lookup_length_idempotent v kvs ks = L.length ks + 1 ≡ L.length (lookup ks (fromList v kvs))
+prop_lookup_length_idempotent v kvs ks = L.length ks ≡ L.length (snd (lookup ks (fromList v kvs)))

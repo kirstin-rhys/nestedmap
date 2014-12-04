@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE GADTs, NoImplicitPrelude, UnicodeSyntax #-}
 
 module Data.Nested.Internal
@@ -12,9 +13,9 @@ module Data.Nested.Internal
        , emptyTree, emptyForest
        , singletonTree, singletonForest
        , fromFoldableTree, fromFoldableForest
-       , fromListTree, fromListForest
          -- * List
        , toListForest, toListTree
+       , fromListTree, fromListForest
        ) where
 
 import qualified Data.List as L
@@ -27,13 +28,15 @@ import Data.Ord (Ord)
 import Data.Tuple (uncurry, snd)
 import Data.Function (flip, ($), const, id)
 import Data.Function.Unicode ((∘))
-import Data.Functor (Functor, fmap)
+import Data.Functor (Functor, fmap, (<$>))
 import Data.Foldable (Foldable, foldr, foldMap)
+import Data.Traversable (Traversable, mapAccumL, traverse)
 import Data.Monoid (Monoid, mempty, mappend, mconcat)
 import Data.Monoid.Unicode ((⊕))
 import Text.Show (Show)
 import Control.Arrow ((&&&))
-import Control.Monad ((>>=), join)
+import Control.Monad (MonadPlus, (>>=), join, return, mplus)
+import Control.Applicative (Applicative, (<*>))
 import Data.Map (Map)
 import qualified Data.Map as M
 
@@ -66,8 +69,14 @@ instance Foldable (Forest κ) where
   foldr     = foldrForest
 
 instance Foldable (Tree κ) where
-  foldMap g (Tree x f) = (g x) ⊕ (foldMap g f)
-  foldr                = foldrTree
+  foldMap f = (f ∘ fruit) ⊕ (foldMap f ∘ forest)
+  foldr     = foldrTree
+
+instance Traversable (Forest κ) where
+  traverse f fst = (⊥)
+
+instance Traversable (Tree κ) where
+  traverse f t = (⊥)
 
 nullForest ∷ Forest κ α → Bool
 nullForest = M.null ∘ unForest
@@ -87,13 +96,13 @@ sizeForest = foldr (const (+1)) 0
 sizeTree ∷ Tree κ α → Int
 sizeTree = (+1) ∘ sizeForest ∘ forest
 
-lookupForest ∷ Ord κ ⇒ [κ] → Forest κ α → [Maybe α]
-lookupForest ks f = snd $ L.mapAccumL (flip lookup) (Just f) ks
+lookupForest ∷ (Traversable φ, Ord κ) ⇒ Forest κ α → φ κ → φ (Maybe α)
+lookupForest f = snd ∘ mapAccumL (flip lookup) (Just f)
   where lookup ∷ Ord κ ⇒ κ → Maybe (Forest κ α) → (Maybe (Forest κ α), Maybe α)
         lookup k = (fmap forest &&& fmap fruit) ∘ join ∘ fmap (M.lookup k ∘ unForest)
 
-lookupTree ∷ Ord κ ⇒ [κ] → Tree κ α → [Maybe α]
-lookupTree ks t = (Just $ fruit t) : lookupForest ks (forest t)
+lookupTree ∷ (Traversable φ, Ord κ) ⇒ Tree κ α → φ κ → (α, φ (Maybe α))
+lookupTree t = (fruit t,) ∘ lookupForest (forest t)
 
 emptyForest ∷ Forest κ α
 emptyForest = Forest M.empty
@@ -138,13 +147,14 @@ foldrForest ∷ (α → β → β) → β → Forest κ α → β
 foldrForest f z = M.foldr (flip $ foldrTree f) z ∘ unForest
 
 foldrTree ∷ (α → β → β) → β → Tree κ α → β
-foldrTree f z (Tree x fst) = f x (foldrForest f z fst)
+foldrTree f z t = f (fruit t) (foldrForest f z (forest t))
+
 
 unionForest ∷ Ord κ ⇒ Forest κ α → Forest κ α → Forest κ α
 unionForest (Forest f1) (Forest f2) = Forest $ M.unionWith unionTree f1 f2
 
 unionTree ∷ Ord κ ⇒ Tree κ α → Tree κ α → Tree κ α
-unionTree (Tree x1 f1) (Tree x2 f2) = Tree x2 (unionForest f1 f2)
+unionTree (Tree _x1 f1) (Tree x2 f2) = Tree x2 (unionForest f1 f2)
 
 
 unionForestWithKey ∷ Ord κ ⇒ (κ → α → α → α) → Forest κ α → Forest κ α → Forest κ α
