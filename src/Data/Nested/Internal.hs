@@ -9,6 +9,7 @@ module Data.Nested.Internal
        , nullTree, nullForest
        , sizeTree, sizeForest
        , lookupTree, lookupForest
+       , memberTree, memberForest                     
          -- * Construction
        , emptyTree, emptyForest
        , singletonTree, singletonForest
@@ -21,7 +22,7 @@ module Data.Nested.Internal
 import qualified Data.List as L
 import Prelude.Unicode ((⊥))
 import Prelude (Num, (+))
-import Data.Maybe (Maybe(Just, Nothing), maybe)
+import Data.Maybe (Maybe(Just, Nothing), maybe, isJust)
 import Data.Int (Int)
 import Data.Bool (Bool, otherwise)
 import Data.Ord (Ord)
@@ -103,6 +104,13 @@ lookupForest f = snd ∘ mapAccumL (flip lookup) (Just f)
 
 lookupTree ∷ (Traversable φ, Ord κ) ⇒ Tree κ α → φ κ → (α, φ (Maybe α))
 lookupTree t = (fruit t,) ∘ lookupForest (forest t)
+
+memberTree ∷ (Traversable φ, Ord κ) ⇒ Tree κ α → φ κ → φ Bool
+memberTree t = (isJust <$>) ∘ snd ∘ lookupTree t 
+
+memberForest ∷ (Traversable φ, Ord κ) ⇒ Forest κ α → φ κ → φ Bool
+memberForest f = (isJust <$>) ∘ lookupForest f
+
 
 emptyForest ∷ Forest κ α
 emptyForest = Forest M.empty

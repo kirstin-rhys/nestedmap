@@ -6,7 +6,7 @@ module Data.Nested.Tree
          -- * Query
        , fruit, forest
        , null, size
-       , lookup
+       , lookup, member
          -- * Construction
        , empty
        , singleton
@@ -34,6 +34,7 @@ import Data.Nested.Internal ( Tree
                             , fromListTree
                             , toListTree
                             , lookupTree
+                            , memberTree
                             )
 
 empty ∷ α → Tree κ α
@@ -47,6 +48,9 @@ size = sizeTree
 
 lookup ∷ (Traversable φ, Ord κ) ⇒ φ κ → Tree κ α → (α, φ (Maybe α))
 lookup = flip lookupTree
+
+member ∷ (Traversable φ, Ord κ) ⇒ φ κ → Tree κ α → φ Bool
+member = flip memberTree
 
 singleton ∷ Foldable φ ⇒ α → φ (κ,α) → Tree κ α
 singleton = singletonTree

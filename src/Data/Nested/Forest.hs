@@ -33,6 +33,7 @@ import Data.Nested.Internal ( Forest
                             , fromListForest
                             , toListForest
                             , lookupForest
+                            , memberForest                              
                             )
 
 empty ∷ Forest κ α
@@ -58,3 +59,6 @@ toList = toListForest
 
 lookup ∷ (Traversable φ, Ord κ) ⇒ φ κ → Forest κ α → φ (Maybe α)
 lookup = flip lookupForest
+
+member ∷ (Traversable φ, Ord κ) ⇒ φ κ → Forest κ α → φ Bool
+member = flip memberForest
