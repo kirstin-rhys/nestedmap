@@ -74,10 +74,10 @@ instance Foldable (Tree κ) where
   foldr     = foldrTree
 
 instance Traversable (Forest κ) where
-  traverse f fst = (⊥)
+  traverse f = traverseForest f
 
 instance Traversable (Tree κ) where
-  traverse f t = (⊥)
+  traverse f = traverseTree f
 
 nullForest ∷ Forest κ α → Bool
 nullForest = M.null ∘ unForest
@@ -97,6 +97,7 @@ sizeForest = foldr (const (+1)) 0
 sizeTree ∷ Tree κ α → Int
 sizeTree = (+1) ∘ sizeForest ∘ forest
 
+-- a more general version would use Folable φ as input and a user-specifiable Monoid output
 lookupForest ∷ (Traversable φ, Ord κ) ⇒ Forest κ α → φ κ → φ (Maybe α)
 lookupForest f = snd ∘ mapAccumL (flip lookup) (Just f)
   where lookup ∷ Ord κ ⇒ κ → Maybe (Forest κ α) → (Maybe (Forest κ α), Maybe α)
@@ -143,7 +144,7 @@ toListForest = fmap L.reverse ∘ foldrForestWithAncestorsAndLeafMarker leafCons
 
 toListTree ∷ Tree κ α → (α, [[(κ, α)]])
 toListTree t = (fruit t, toListForest (forest t))
-
+               
 
 mapForest ∷ (α → β) → Forest κ α → Forest κ β
 mapForest f = Forest ∘ M.map (mapTree f) ∘ unForest
@@ -157,6 +158,11 @@ foldrForest f z = M.foldr (flip $ foldrTree f) z ∘ unForest
 foldrTree ∷ (α → β → β) → β → Tree κ α → β
 foldrTree f z t = f (fruit t) (foldrForest f z (forest t))
 
+traverseForest ∷ (Applicative φ) ⇒ (α → φ β) → Forest κ α → φ (Forest κ β)
+traverseForest f = (Forest <$>) <$> traverse (traverseTree f) ∘ unForest 
+
+traverseTree ∷ (Applicative φ) ⇒ (α → φ β) → Tree κ α → φ (Tree κ β)
+traverseTree f t = Tree <$> f (fruit t) <*> traverseForest f (forest t)
 
 unionForest ∷ Ord κ ⇒ Forest κ α → Forest κ α → Forest κ α
 unionForest (Forest f1) (Forest f2) = Forest $ M.unionWith unionTree f1 f2
