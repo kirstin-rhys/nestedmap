@@ -4,3 +4,6 @@ _darcs
 .boring
 dist
 cabal.sandbox.config
+
+# emacs droppings
+\#*\#
