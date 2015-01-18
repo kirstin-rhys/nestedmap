@@ -6,7 +6,7 @@ module Data.Nested.Forest
          -- * Query
        , trees, treeAssocs
        , null, size
-       , lookup
+       , lookup, member
          -- * Construction
        , empty
        , singleton
