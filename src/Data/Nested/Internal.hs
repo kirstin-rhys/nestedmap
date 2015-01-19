@@ -37,7 +37,8 @@ import Data.Monoid.Unicode ((⊕))
 import Text.Show (Show)
 import Control.Arrow ((&&&))
 import Control.Monad (MonadPlus, (>>=), join, return, mplus)
-import Control.Applicative (Applicative, (<*>))
+import Control.Applicative (Applicative)
+import Control.Applicative.Unicode ((⊛))
 import Data.Map (Map)
 import qualified Data.Map as M
 
@@ -52,10 +53,10 @@ data Forest κ α where
   deriving (Show)
 
 instance Functor (Forest κ) where
-  fmap = mapForest
+  fmap f = Forest ∘ ((f <$>) <$>) ∘ unForest
 
 instance Functor (Tree κ) where
-  fmap = mapTree
+  fmap f (Tree v ts) = Tree (f v) (f <$> ts)
 
 instance (Ord κ, Monoid α) ⇒ Monoid (Forest κ α) where
   mempty  = emptyForest
@@ -67,17 +68,17 @@ instance (Ord κ, Monoid α) ⇒ Monoid (Tree κ α) where
 
 instance Foldable (Forest κ) where
   foldMap f = foldMap (foldMap f) ∘ unForest
-  foldr     = foldrForest
+  foldr f z = foldr (flip $ foldr f) z ∘ unForest
 
 instance Foldable (Tree κ) where
-  foldMap f = (f ∘ fruit) ⊕ (foldMap f ∘ forest)
-  foldr     = foldrTree
+  foldMap f             = (f ∘ fruit) ⊕ (foldMap f ∘ forest)
+  foldr f z (Tree v ts) = f v (foldr f z ts)
 
 instance Traversable (Forest κ) where
-  traverse f = traverseForest f
+  traverse f = (Forest <$>) <$> traverse (traverse f) ∘ unForest 
 
 instance Traversable (Tree κ) where
-  traverse f = traverseTree f
+  traverse f (Tree v ts) = Tree <$> f v ⊛ traverse f ts
 
 nullForest ∷ Forest κ α → Bool
 nullForest = M.null ∘ unForest
@@ -145,31 +146,11 @@ toListForest = fmap L.reverse ∘ foldrForestWithAncestorsAndLeafMarker leafCons
 toListTree ∷ Tree κ α → (α, [[(κ, α)]])
 toListTree t = (fruit t, toListForest (forest t))
                
-
-mapForest ∷ (α → β) → Forest κ α → Forest κ β
-mapForest f = Forest ∘ M.map (mapTree f) ∘ unForest
-
-mapTree ∷ (α → β) → Tree κ α → Tree κ β
-mapTree f (Tree v ts) = Tree (f v) (mapForest f ts)
-
-foldrForest ∷ (α → β → β) → β → Forest κ α → β
-foldrForest f z = M.foldr (flip $ foldrTree f) z ∘ unForest
-
-foldrTree ∷ (α → β → β) → β → Tree κ α → β
-foldrTree f z t = f (fruit t) (foldrForest f z (forest t))
-
-traverseForest ∷ (Applicative φ) ⇒ (α → φ β) → Forest κ α → φ (Forest κ β)
-traverseForest f = (Forest <$>) <$> traverse (traverseTree f) ∘ unForest 
-
-traverseTree ∷ (Applicative φ) ⇒ (α → φ β) → Tree κ α → φ (Tree κ β)
-traverseTree f t = Tree <$> f (fruit t) <*> traverseForest f (forest t)
-
 unionForest ∷ Ord κ ⇒ Forest κ α → Forest κ α → Forest κ α
 unionForest (Forest f1) (Forest f2) = Forest $ M.unionWith unionTree f1 f2
 
 unionTree ∷ Ord κ ⇒ Tree κ α → Tree κ α → Tree κ α
 unionTree (Tree _x1 f1) (Tree x2 f2) = Tree x2 (unionForest f1 f2)
-
 
 unionForestWithKey ∷ Ord κ ⇒ (κ → α → α → α) → Forest κ α → Forest κ α → Forest κ α
 unionForestWithKey f (Forest m1) (Forest m2) = Forest $ M.unionWithKey (unionTreeWithKey' f) m1 m2
