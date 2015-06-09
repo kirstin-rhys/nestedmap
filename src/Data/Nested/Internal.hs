@@ -192,3 +192,8 @@ foldrTreeWithAncestorsAndLeafMarker1 ∷ (Bool → [(κ, α)] → β → β) →
 foldrTreeWithAncestorsAndLeafMarker1 f kvs k t z = f isLeaf as (foldrForestWithAncestorsAndLeafMarker1 f as z (forest t))
   where as = (k, fruit t):kvs
         isLeaf = nullTree t
+
+        
+
+
+
