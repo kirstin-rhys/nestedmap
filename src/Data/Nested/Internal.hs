@@ -17,6 +17,17 @@ module Data.Nested.Internal
          -- * List
        , toListForest, toListTree
        , fromListTree, fromListForest
+         -- * Utils
+       , unionTree, unionForest
+       , unionTreeWithKey, unionForestWithKey
+       , unionTreeWithKey'
+       , unionTreeWith, unionForestWith
+       , foldrForestWithAncestors
+       , foldrForestWithAncestors1
+       , foldrTreeWithAncestors1
+       , foldrForestWithAncestorsAndLeafMarker
+       , foldrForestWithAncestorsAndLeafMarker1
+       , foldrTreeWithAncestorsAndLeafMarker1
        ) where
 
 import qualified Data.List as L

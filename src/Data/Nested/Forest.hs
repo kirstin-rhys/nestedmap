@@ -14,6 +14,14 @@ module Data.Nested.Forest
        , fromList
          -- * List
        , toList
+         -- * Utils
+       , unionForest
+       , unionForestWithKey
+       , unionForestWith
+       , foldrForestWithAncestors
+       , foldrForestWithAncestors1
+       , foldrForestWithAncestorsAndLeafMarker
+       , foldrForestWithAncestorsAndLeafMarker1
        ) where
 
 import Data.Function (flip)
@@ -33,7 +41,14 @@ import Data.Nested.Internal ( Forest
                             , fromListForest
                             , toListForest
                             , lookupForest
-                            , memberForest                              
+                            , memberForest
+                            , unionForest
+                            , unionForestWithKey
+                            , unionForestWith
+                            , foldrForestWithAncestors
+                            , foldrForestWithAncestors1
+                            , foldrForestWithAncestorsAndLeafMarker
+                            , foldrForestWithAncestorsAndLeafMarker1
                             )
 
 empty ∷ Forest κ α
