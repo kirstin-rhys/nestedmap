@@ -14,6 +14,13 @@ module Data.Nested.Tree
        , fromList
          -- * List
        , toList
+         -- * Utils
+       , unionTree
+       , unionTreeWithKey
+       , unionTreeWithKey'
+       , unionTreeWith
+       , foldrTreeWithAncestors1
+       , foldrTreeWithAncestorsAndLeafMarker1
        ) where
 
 
@@ -35,6 +42,12 @@ import Data.Nested.Internal ( Tree
                             , toListTree
                             , lookupTree
                             , memberTree
+                            , unionTree
+                            , unionTreeWithKey
+                            , unionTreeWithKey'
+                            , unionTreeWith
+                            , foldrTreeWithAncestors1
+                            , foldrTreeWithAncestorsAndLeafMarker1
                             )
 
 empty ∷ α → Tree κ α
