@@ -17,11 +17,12 @@ module Data.Nested.Internal
          -- * List
        , toListForest, toListTree
        , fromListTree, fromListForest
-         -- * Utils
+         -- * Semigroupy
        , unionTree, unionForest
        , unionTreeWithKey, unionForestWithKey
        , unionTreeWithKey'
        , unionTreeWith, unionForestWith
+         -- * Foldablish               
        , foldrForestWithAncestors
        , foldrForestWithAncestors1
        , foldrTreeWithAncestors1

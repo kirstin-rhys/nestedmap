@@ -14,14 +14,15 @@ module Data.Nested.Forest
        , fromList
          -- * List
        , toList
-         -- * Utils
-       , unionForest
-       , unionForestWithKey
-       , unionForestWith
-       , foldrForestWithAncestors
-       , foldrForestWithAncestors1
-       , foldrForestWithAncestorsAndLeafMarker
-       , foldrForestWithAncestorsAndLeafMarker1
+         -- * Semigroupish 
+       , union
+       , unionWithKey
+       , unionWith
+         -- * Foldable Plus
+       , foldrWithAncestors
+       , foldrWithAncestors1
+       , foldrWithAncestorsAndLeafMarker
+       , foldrWithAncestorsAndLeafMarker1
        ) where
 
 import Data.Function (flip)
@@ -77,3 +78,26 @@ lookup = flip lookupForest
 
 member ∷ (Traversable φ, Ord κ) ⇒ φ κ → Forest κ α → φ Bool
 member = flip memberForest
+
+union ∷ Ord κ ⇒ Forest κ α → Forest κ α → Forest κ α
+union = unionForest
+
+unionWithKey ∷ Ord κ ⇒ (κ → α → α → α) → Forest κ α → Forest κ α → Forest κ α
+unionWithKey = unionForestWithKey
+
+unionWith ∷ Ord κ ⇒ (α → α → α) → Forest κ α → Forest κ α → Forest κ α
+unionWith = unionForestWith
+
+foldrWithAncestors ∷ ([(κ, α)] → β → β) → β → Forest κ α → β
+foldrWithAncestors = foldrForestWithAncestors
+
+foldrWithAncestors1 ∷ ([(κ, α)] → β → β) → [(κ, α)] → β → Forest κ α → β
+foldrWithAncestors1  = foldrForestWithAncestors1 
+
+foldrWithAncestorsAndLeafMarker ∷ (Bool → [(κ, α)] → β → β) → β → Forest κ α → β
+foldrWithAncestorsAndLeafMarker = foldrForestWithAncestorsAndLeafMarker
+
+foldrWithAncestorsAndLeafMarker1 ∷ (Bool → [(κ, α)] → β → β) → [(κ, α)] → β → Forest κ α → β
+foldrWithAncestorsAndLeafMarker1 = foldrForestWithAncestorsAndLeafMarker1
+
+

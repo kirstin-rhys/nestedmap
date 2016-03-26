@@ -14,13 +14,14 @@ module Data.Nested.Tree
        , fromList
          -- * List
        , toList
-         -- * Utils
-       , unionTree
-       , unionTreeWithKey
-       , unionTreeWithKey'
-       , unionTreeWith
-       , foldrTreeWithAncestors1
-       , foldrTreeWithAncestorsAndLeafMarker1
+         -- * Semigroupy
+       , union
+       , unionWithKey
+       , unionWithKey'
+       , unionWith
+         -- * Foldy
+       , foldrWithAncestors1
+       , foldrWithAncestorsAndLeafMarker1
        ) where
 
 
@@ -76,3 +77,23 @@ fromList = fromListTree
 
 toList ∷ Tree κ α → (α, [[(κ, α)]])
 toList = toListTree
+
+union ∷ Ord κ ⇒ Tree κ α → Tree κ α → Tree κ α
+union = unionTree 
+
+unionWithKey ∷  Ord κ ⇒ (α → α → α) → (κ → α → α → α) → Tree κ α → Tree κ α → Tree κ α
+unionWithKey = unionTreeWithKey 
+
+unionWithKey' ∷ Ord κ ⇒ (κ → α → α → α) → κ → Tree κ α → Tree κ α → Tree κ α
+unionWithKey' = unionTreeWithKey'
+
+unionWith ∷ Ord κ ⇒ (α → α → α) → Tree κ α → Tree κ α → Tree κ α
+unionWith = unionTreeWith
+
+foldrWithAncestors1 ∷ ([(κ, α)] → β → β) → [(κ, α)] → κ → Tree κ α → β → β
+foldrWithAncestors1 = foldrTreeWithAncestors1
+
+foldrWithAncestorsAndLeafMarker1 ∷ (Bool → [(κ, α)] → β → β) → [(κ, α)] → κ → Tree κ α → β → β
+foldrWithAncestorsAndLeafMarker1 = foldrTreeWithAncestorsAndLeafMarker1
+
+
