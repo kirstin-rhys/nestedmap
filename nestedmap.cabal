@@ -25,13 +25,16 @@ source-repository head
 library
   exposed-modules:     Data.Nested.Tree
                      , Data.Nested.Forest
+                     , Data.Nested.Strict.Tree
+                     , Data.Nested.Strict.Forest
   other-modules:       Data.Nested.Internal
+                     , Data.Nested.Strict.Internal
   -- other-extensions:
   hs-source-dirs:      src
   default-language:    Haskell2010
-  build-depends:       base >=4.7 && <4.9
+  build-depends:       base >=4.7 && <4.19
                      , containers >= 0.5.5.1
-                     , base-unicode-symbols >= 0.2 && < 0.4
+                     , base-unicode-symbols >= 0.2
 
 test-suite spec
   type:                exitcode-stdio-1.0
@@ -39,8 +42,8 @@ test-suite spec
   hs-source-dirs:      src, test
   default-language:    Haskell2010
   build-depends:       QuickCheck >= 2.7 && < 2.8
-                     , base >=4.7 && <4.9
+                     , base >=4.7 && <4.19
                      , containers >= 0.5.5.1
-                     , hspec >= 2.0 && < 2.1
-                     , base-unicode-symbols >= 0.2 && < 0.4
-                     , data-ordlist >= 0.4.7 && < 0.5
+                     , hspec >= 2.0
+                     , base-unicode-symbols >= 0.2
+                     , data-ordlist >= 0.4.7

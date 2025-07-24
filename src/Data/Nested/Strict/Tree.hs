@@ -1,6 +1,8 @@
-{-# LANGUAGE GADTs, NoImplicitPrelude, UnicodeSyntax #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE UnicodeSyntax #-}
 
-module Data.Nested.Tree
+module Data.Nested.Strict.Tree
        ( -- * Tree type
          Tree
          -- * Query
@@ -34,23 +36,23 @@ import Data.Foldable (Foldable)
 import Data.Traversable (Traversable)
 import Data.Monoid (Monoid)
 
-import Data.Nested.Internal ( Tree
-                            , nullTree, fruit, forest
-                            , sizeTree
-                            , emptyTree, emptyTree'
-                            , singletonTree
-                            , fromFoldableTree
-                            , fromListTree
-                            , toListTree
-                            , lookupTree
-                            , memberTree
-                            , unionTree
-                            , unionTreeWithKey
-                            , unionTreeWithKey'
-                            , unionTreeWith
-                            , foldrTreeWithAncestors1
-                            , foldrTreeWithAncestorsAndLeafMarker1
-                            )
+import Data.Nested.Strict.Internal ( Tree
+                                   , nullTree, fruit, forest
+                                   , sizeTree
+                                   , emptyTree, emptyTree'
+                                   , singletonTree
+                                   , fromFoldableTree
+                                   , fromListTree
+                                   , toListTree
+                                   , lookupTree
+                                   , memberTree
+                                   , unionTree
+                                   , unionTreeWithKey
+                                   , unionTreeWithKey'
+                                   , unionTreeWith
+                                   , foldrTreeWithAncestors1
+                                   , foldrTreeWithAncestorsAndLeafMarker1
+                                   )
 
 empty ∷ Monoid α ⇒ Tree κ α
 empty = emptyTree

@@ -5,7 +5,7 @@
 {-# LANGUAGE UnicodeSyntax #-}
 {-# LANGUAGE CPP #-}
 
-module Data.Nested.Internal
+module Data.Nested.Strict.Internal
        ( -- * Tree and Forest types
          Tree, Forest
          -- * Query
@@ -57,8 +57,8 @@ import Control.Arrow ((&&&))
 import Control.Monad (MonadPlus, (>>=), join, return, mplus)
 import Control.Applicative (Applicative)
 import Control.Applicative.Unicode ((⊛))
-import Data.Map (Map)
-import Data.Map qualified as M
+import Data.Map.Strict (Map)
+import Data.Map.Strict qualified as M
 
 #if __GLASGOW_HASKELL__
 import Data.Data (Data(..), mkNoRepType, gcast2)
@@ -68,8 +68,8 @@ import Data.Data (Data(..), mkNoRepType, gcast2)
 
 
 data Tree κ α where
-  Tree ∷ { fruit  ∷ α
-         , forest ∷ Forest κ α
+  Tree ∷ { fruit  ∷ !α
+         , forest ∷ !(Forest κ α)
          } → Tree κ α
   deriving (Show)
 
@@ -175,7 +175,6 @@ memberTree t = (isJust <$>) ∘ snd ∘ lookupTree t
 
 memberForest ∷ (Traversable φ, Ord κ) ⇒ Forest κ α → φ κ → φ Bool
 memberForest f = (isJust <$>) ∘ lookupForest f
-
 
 emptyForest ∷ Forest κ α
 emptyForest = Forest M.empty
