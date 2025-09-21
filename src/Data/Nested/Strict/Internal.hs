@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE GADTs #-}
@@ -66,7 +67,6 @@ import Data.Data (Data(..), mkNoRepType, gcast2)
 
 
 
-
 data Tree κ α where
   Tree ∷ { fruit  ∷ !α
          , forest ∷ !(Forest κ α)
@@ -81,7 +81,8 @@ instance Functor (Forest κ) where
   fmap f = Forest ∘ ((f <$>) <$>) ∘ unForest
 
 instance Functor (Tree κ) where
-  fmap f (Tree v ts) = Tree (f v) (f <$> ts)
+  fmap f (Tree v ts) = Tree x (f <$> ts)
+    where !x = f v
 
 instance (Ord κ, Semigroup α) ⇒ Semigroup (Forest κ α) where
   (<>) = unionForestWith (<>)
