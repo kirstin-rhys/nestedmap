@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                nestedmap
-version:             0.1.1.2
+version:             0.1.1.3
 synopsis:            A library for nested maps
 description:         This library supports deeply nested key to value mapping.
                      Very much like Data.Map, but for higher, hierarchial dimensions.
@@ -42,7 +42,7 @@ test-suite spec
   hs-source-dirs:      src, test
   default-language:    Haskell2010
   build-depends:       QuickCheck >= 2.7
-                     , base >=4.7
+                     , base >=4.7 && < 4.22
                      , containers >= 0.5.5.1
                      , hspec >= 2.0
                      , base-unicode-symbols >= 0.2
